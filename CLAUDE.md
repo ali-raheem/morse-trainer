@@ -43,11 +43,11 @@ Browser-only:
 
 ## Shared origin
 
-To be served at `/morse/` (not deployed yet). The manifest `id` is `/morse/` (never change it once released). localStorage uses the single key `morse.v1`; "Reset progress" removes only that key. `sw.js` uses cache prefix `morse-`, handles only requests inside its scope, reads only its own cache (never `caches.match()`), precaches with `cache: 'reload'` and fetches with `cache: 'no-cache'`. See `../CLAUDE.md`.
+Served at `/morse/`. The manifest `id` is `/morse/` (never change it once released). localStorage uses the single key `morse.v1`; "Reset progress" removes only that key. `sw.js` uses cache prefix `morse-`, handles only requests inside its scope, reads only its own cache (never `caches.match()`), precaches with `cache: 'reload'` and fetches with `cache: 'no-cache'`. See `../CLAUDE.md`.
 
 ## Deployment
 
-Not deployed yet. To ship, follow "Adding a new app" in `../CLAUDE.md`, then after `npm test` and `npm run bump` copy only the served files:
+Live since 2026-10-10 (nginx blocks in the site config, card on the homepage). To ship an update, after `npm test` and `npm run bump` copy only the served files:
 
 ```bash
 rsync -a --delete --chmod=D755,F644 index.html manifest.webmanifest sw.js css js icons root@185.163.204.17:/var/www/shoryuken.me/morse/
