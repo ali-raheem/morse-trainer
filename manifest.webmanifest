@@ -1,0 +1,20 @@
+{
+  "id": "/morse/",
+  "name": "Morse Trainer",
+  "short_name": "Morse",
+  "description": "Learn Morse code by the Koch method, drill instant recognition, copy words and callsigns, practise sending, and decode through the microphone. Works offline.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b0a08",
+  "theme_color": "#0b0a08",
+  "lang": "en",
+  "categories": ["education", "utilities"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

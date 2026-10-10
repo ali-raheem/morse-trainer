@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Morse Trainer</title>
+  <meta name="description" content="Learn Morse code by the Koch method with Farnsworth timing, drill instant character recognition, copy words and callsigns, practise sending on a straight key or paddles, and decode Morse through the microphone. Works offline.">
+  <meta name="theme-color" content="#0b0a08">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Icon sprite: 24×24 line icons drawn in currentColor; use as <svg class="icon"><use href="#i-name"/></svg>. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-replay" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.5-5.8L4 8.5"/><path d="M4 4v4.5h4.5"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h2M10 12h10M4 18h8M16 18h4"/><circle cx="16" cy="6" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="14" cy="18" r="2"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></symbol>
+    <symbol id="i-ear" viewBox="0 0 24 24"><path d="M7 9a5 5 0 0 1 10 0c0 3-3 4-3 7a2.5 2.5 0 0 1-5 .5"/><path d="M10 9.5a2 2 0 0 1 4 0"/></symbol>
+    <symbol id="i-install" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19.5h14"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><path d="M3 17h18M6 17v-3h12v3M9 14V9h6v5M12 9V5"/><circle cx="12" cy="4.5" r="1.5"/></symbol>
+  </svg>
+
+  <header class="top">
+    <div class="brand"><span class="dots" aria-hidden="true">–·–·</span> Morse</div>
+    <button id="btn-settings" class="icon-btn" title="Settings" aria-label="Settings"><svg class="icon"><use href="#i-settings"/></svg></button>
+    <nav class="tabs" role="tablist" aria-label="Modes">
+      <button role="tab" data-tab="learn" aria-selected="true">Learn</button>
+      <button role="tab" data-tab="instant">Instant</button>
+      <button role="tab" data-tab="copy">Copy</button>
+      <button role="tab" data-tab="send">Send</button>
+      <button role="tab" data-tab="decode">Decode</button>
+      <button role="tab" data-tab="chart">Chart</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Learn: Koch method sessions -->
+    <section id="tab-learn" class="tab" role="tabpanel">
+      <div class="lesson">
+        <button id="lesson-prev" class="icon-btn" aria-label="Previous lesson"><svg class="icon"><use href="#i-prev"/></svg></button>
+        <div class="lesson-mid">
+          <div class="kicker">Lesson <span id="lesson-no"></span> of <span id="lesson-of"></span></div>
+          <div id="lesson-set" class="charset" aria-label="Characters in this lesson"></div>
+        </div>
+        <button id="lesson-next" class="icon-btn" aria-label="Next lesson"><svg class="icon"><use href="#i-next"/></svg></button>
+      </div>
+      <div class="newchar">
+        <div>New: <b id="new-char"></b> <span id="new-code" class="code"></span></div>
+        <button id="hear-new" class="btn"><svg class="icon"><use href="#i-ear"/></svg>Hear it</button>
+      </div>
+      <div class="row">
+        <label>Characters <select id="learn-wpm"></select></label>
+        <label>Spacing <select id="learn-eff"></select></label>
+        <label>Length <select id="learn-len"></select></label>
+      </div>
+      <button id="learn-start" class="btn primary big"><svg class="icon"><use href="#i-play"/></svg><span>Start</span></button>
+      <div class="progress" aria-hidden="true"><i id="learn-progress"></i></div>
+      <textarea id="learn-copy" rows="4" placeholder="Type what you hear. Groups of five, spaces optional." autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+      <div id="learn-result" class="result" aria-live="polite"></div>
+      <h3>How you're doing</h3>
+      <div id="learn-stats" class="bars"></div>
+      <p class="hint">The Koch method starts at full character speed with just two characters. Copy a session at 90% or better
+        and the next character joins. Hearing whole characters at speed, rather than counting dots and dashes, is what gets you
+        past the plateau at 10 wpm. Farnsworth spacing adds time between characters while you learn; close it up as you improve.</p>
+    </section>
+
+    <!-- Instant: single-character recognition -->
+    <section id="tab-instant" class="tab" role="tabpanel" hidden>
+      <div class="instant">
+        <div id="ins-char" class="huge" aria-live="polite">?</div>
+        <div id="ins-code" class="code"></div>
+        <div id="ins-meta" class="meta"></div>
+      </div>
+      <div class="row">
+        <label>Characters <select id="ins-set">
+          <option value="lesson">this lesson</option>
+          <option value="letters">letters</option>
+          <option value="alnum">letters and digits</option>
+          <option value="all">everything</option>
+        </select></label>
+        <button id="ins-start" class="btn primary"><svg class="icon"><use href="#i-play"/></svg><span>Start</span></button>
+      </div>
+      <div id="ins-pad" class="pad" aria-label="Answer"></div>
+      <p class="hint">Hear a character, press its key (or tap it) as fast as you can. Slow and missed characters come back more often.</p>
+      <h3>Reaction times</h3>
+      <div id="ins-stats" class="bars"></div>
+    </section>
+
+    <!-- Copy: words, callsigns, abbreviations -->
+    <section id="tab-copy" class="tab" role="tabpanel" hidden>
+      <div class="row">
+        <label>Practise <select id="copy-kind">
+          <option value="words">common words</option>
+          <option value="abbr">abbreviations and Q-codes</option>
+          <option value="calls">callsigns</option>
+          <option value="qso">on-air exchanges</option>
+        </select></label>
+        <span id="copy-score" class="meta"></span>
+      </div>
+      <div class="row">
+        <button id="copy-play" class="btn primary"><svg class="icon"><use href="#i-play"/></svg><span>Play</span></button>
+        <button id="copy-replay" class="btn"><svg class="icon"><use href="#i-replay"/></svg>Again</button>
+        <button id="copy-show" class="btn">Show</button>
+      </div>
+      <input id="copy-input" type="text" placeholder="Type it and press Enter" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false">
+      <div id="copy-result" class="result" aria-live="polite"></div>
+    </section>
+
+    <!-- Send: straight key or paddles, decoded live -->
+    <section id="tab-send" class="tab" role="tabpanel" hidden>
+      <div class="row">
+        <div class="seg" role="radiogroup" aria-label="Key">
+          <button role="radio" data-mode="straight" aria-checked="true">Straight key</button>
+          <button role="radio" data-mode="iambic" aria-checked="false">Paddles</button>
+        </div>
+        <span id="send-meta" class="meta"></span>
+      </div>
+      <div class="target-row"><div id="send-target" class="target"></div><button id="send-new" class="btn">New text</button></div>
+      <div id="send-out" class="decoded" aria-live="polite"></div>
+      <div class="keys">
+        <button id="key-straight" class="key" aria-label="Key"><svg class="icon"><use href="#i-key"/></svg>key</button>
+        <button id="paddle-dit" class="key paddle" aria-label="Dit paddle" hidden>·</button>
+        <button id="paddle-dah" class="key paddle" aria-label="Dah paddle" hidden>–</button>
+      </div>
+      <div class="row"><button id="send-clear" class="btn">Clear</button></div>
+      <p class="hint" id="send-hint"></p>
+    </section>
+
+    <!-- Decode: microphone -->
+    <section id="tab-decode" class="tab" role="tabpanel" hidden>
+      <div class="row">
+        <button id="dec-start" class="btn primary"><svg class="icon"><use href="#i-mic"/></svg><span>Start listening</span></button>
+        <button id="dec-clear" class="btn">Clear</button>
+      </div>
+      <div class="meter" aria-hidden="true"><i id="dec-level"></i><b id="dec-led"></b></div>
+      <div id="dec-meta" class="meta"></div>
+      <div id="dec-out" class="decoded big" aria-live="polite"></div>
+      <p class="hint">Play Morse near the microphone, from a radio, a recording or another app. It finds the tone between
+        300 and 1,200 Hz and follows the speed. It copies clean machine-sent code best; hand-sent code with uneven spacing,
+        noise, or two signals at once will trip it up, as they do any decoder. Nothing is recorded or sent anywhere.</p>
+    </section>
+
+    <!-- Chart -->
+    <section id="tab-chart" class="tab" role="tabpanel" hidden>
+      <p class="hint">Tap any character to hear it. In Koch order: the order you'll learn them.</p>
+      <div id="chart" class="chart"></div>
+      <h3>Prosigns</h3>
+      <div id="chart-pro" class="chart"></div>
+      <h3>Common abbreviations</h3>
+      <dl class="abbr">
+        <dt>CQ</dt><dd>calling anyone</dd><dt>DE</dt><dd>from</dd><dt>K</dt><dd>over</dd><dt>KN</dt><dd>over, named station only</dd>
+        <dt>R</dt><dd>received</dd><dt>RST</dt><dd>signal report</dd><dt>5NN</dt><dd>599, abbreviated</dd><dt>TNX, TU</dt><dd>thanks, thank you</dd>
+        <dt>UR</dt><dd>your</dd><dt>FB</dt><dd>fine business (great)</dd><dt>OM, YL</dt><dd>old man, young lady (any operator)</dd><dt>WX</dt><dd>weather</dd>
+        <dt>73</dt><dd>best regards</dd><dt>QTH</dt><dd>location</dd><dt>QRZ?</dt><dd>who is calling me?</dd><dt>QSL</dt><dd>I confirm receipt</dd>
+        <dt>QRM, QRN</dt><dd>interference, static</dd><dt>QSB</dt><dd>fading</dd><dt>QRS, QRQ</dt><dd>send slower, faster</dd><dt>QRT</dt><dd>closing down</dd>
+      </dl>
+    </section>
+  </main>
+
+  <aside id="settings" class="sheet" hidden aria-label="Settings">
+    <div class="sheet-head"><h2>Settings</h2><button id="settings-close" class="icon-btn" aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button></div>
+    <label class="slider">Character speed <output id="out-wpm"></output><input id="set-wpm" type="range" min="5" max="45" step="1"></label>
+    <label class="slider">Effective speed (Farnsworth) <output id="out-eff"></output><input id="set-eff" type="range" min="3" max="45" step="1"></label>
+    <label class="slider">Tone <output id="out-tone"></output><input id="set-tone" type="range" min="350" max="1000" step="10"></label>
+    <label class="slider">Volume <output id="out-vol"></output><input id="set-vol" type="range" min="0" max="1" step="0.05"></label>
+    <div class="row">
+      <button id="set-test" class="btn"><svg class="icon"><use href="#i-play"/></svg>Test: PARIS</button>
+      <button id="set-install" class="btn" hidden><svg class="icon"><use href="#i-install"/></svg>Install app</button>
+    </div>
+    <p class="hint" id="install-hint" hidden></p>
+    <div class="row"><button id="set-reset" class="btn danger">Reset progress</button></div>
+    <p class="version" id="version"></p>
+  </aside>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

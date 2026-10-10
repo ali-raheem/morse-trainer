@@ -1,0 +1,13 @@
+{
+  "name": "morse-trainer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Learn and practise Morse code: Koch lessons, instant recognition, copying, sending and a microphone decoder, as an offline PWA.",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "serve": "python3 -m http.server 8080",
+    "bump": "node scripts/bump.mjs",
+    "icons": "python3 scripts/make_icons.py"
+  }
+}
