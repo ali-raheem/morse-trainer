@@ -1,5 +1,14 @@
 # Morse Trainer
 
+[![CI](https://github.com/ali-raheem/morse-trainer/actions/workflows/ci.yml/badge.svg)](https://github.com/ali-raheem/morse-trainer/actions/workflows/ci.yml) [![GitHub Pages](https://github.com/ali-raheem/morse-trainer/actions/workflows/pages.yml/badge.svg)](https://github.com/ali-raheem/morse-trainer/actions/workflows/pages.yml)
+
+**▶ Try it live: [shoryuken.me/morse](https://shoryuken.me/morse/)** · mirror on [GitHub Pages](https://ali-raheem.github.io/morse-trainer/) · installable, works offline
+
+<p align="center">
+  <a href="https://shoryuken.me/morse/"><img src="docs/screenshots/desktop.webp" alt="Morse Trainer on a desktop browser" width="74%"></a>
+  <a href="https://shoryuken.me/morse/"><img src="docs/screenshots/mobile.webp" alt="Morse Trainer on a phone" width="22%"></a>
+</p>
+
 Learn and practise Morse code in the browser. Installable, and works offline.
 
 - **Learn:** Koch-method lessons. You start at full character speed with just K and M,
