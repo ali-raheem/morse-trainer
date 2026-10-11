@@ -51,3 +51,7 @@ Progress and per-character stats are kept in this browser (`localStorage`, key `
 npm run serve   # python3 -m http.server 8080 (the microphone needs localhost or HTTPS)
 npm test        # node --test, no dependencies
 ```
+
+## Licence
+
+[MIT](LICENSE) © 2026 Ali Raheem.
